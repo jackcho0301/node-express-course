@@ -6,6 +6,7 @@ const connectDB = require('./db/connect')
 require('dotenv').config()
 
 //middleware
+app.use(express.static('./public')) //serve static files
 app.use(express.json()) // access data in req.body
 
 
