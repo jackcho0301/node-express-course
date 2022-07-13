@@ -10,6 +10,7 @@ app.use(express.static('./public')) //serve static files
 app.use(express.json()) // access data in req.body
 
 
+
 //routes
 app.get('/hello', (req, res) => {
     res.send('Task Manager App')
