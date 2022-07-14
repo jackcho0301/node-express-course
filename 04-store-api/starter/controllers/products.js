@@ -2,12 +2,12 @@ const { query } = require('express')
 const Product = require('../models/product')
 
 const getAllProductsStatic = async (req, res) => {
-    const products = await Product.find({}).select('name price')
+    const products = await Product.find({price: {$gt : 30}})
     res.status(200).json({products, numHits: products.length})
 }
 
 const getAllProducts = async (req, res) => {
-    const {featured, company, name, sort, fields} = req.query //pull out only the property we need, to avoid bug
+    const {featured, company, name, sort, fields, numericFilters} = req.query //pull out only the property we need, to avoid bug
     
     const queryObject = {} //create new queryObject.
 
@@ -22,6 +22,37 @@ const getAllProducts = async (req, res) => {
     if (name) {
         queryObject.name = {$regex: name, $options: 'i'} // i means 'case insensitive
     }
+
+    if (numericFilters) {
+        const operatorMap = {
+            '>' : '$gt',
+            '>=' : '$gte',
+            '=' : '$eq',
+            '<' : '$lt',
+            '<=' : '$lte',
+        }
+
+        const regEx = /\b(<|>|>=|=|<|<=)\b/g
+
+        let filters = numericFilters.replace(regEx, (match) => `-${operatorMap[match]}-`)
+
+        const options = ['price', 'rating']
+        // console.log(filters) //price-$gt-90
+        filters = filters.split(',').forEach((item) => {
+            const [field, operator, value] = item.split('-')
+            // console.log(`${field} ${operator} ${value}`) // price $gt 90
+
+            // console.log(operator)
+            console.log([operator])
+
+            if (options.includes(field)) {
+                queryObject[field] = {[operator]: Number(value)}
+            }
+        })
+    }
+
+
+    console.log(queryObject)
 
     //save the result, so we can chain .sort()
     let result = Product.find(queryObject) //WHY REMOVE AWAIT HERE?
