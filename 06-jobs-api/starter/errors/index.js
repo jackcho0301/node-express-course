@@ -9,3 +9,5 @@ module.exports = {
   NotFoundError,
   BadRequestError,
 }
+
+//index.js is default export; referencing require('./errors') is suffice
