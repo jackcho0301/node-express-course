@@ -24,7 +24,7 @@ formDOM.addEventListener('submit', async (e) => {
     usernameInputDOM.value = ''
     passwordInputDOM.value = ''
 
-    localStorage.setItem('token', data.token)
+    localStorage.setItem('token', data.token) //store token in local storage
     resultDOM.innerHTML = ''
     tokenDOM.textContent = 'token present'
     tokenDOM.classList.add('text-success')
@@ -46,7 +46,7 @@ btnDOM.addEventListener('click', async () => {
   try {
     const { data } = await axios.get('/api/v1/dashboard', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, //for sending request
       },
     })
     resultDOM.innerHTML = `<h5>${data.msg}</h5><p>${data.secret}</p>`
