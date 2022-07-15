@@ -8,10 +8,7 @@ const register = async (req, res) => {
     //password hashing is done in User model
     const user = await User.create({ ...req.body })
 
-    //create token
-    const token = jwt.sign({ userId: user._id, name: user.name }, 'jwtSecret', {
-        expiresIn: '30d'
-    })
+    const token = user.createJWT() //invoking instance method
 
     res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
 }
