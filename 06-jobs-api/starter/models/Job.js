@@ -3,12 +3,12 @@ const mongoose = require('mongoose')
 const JobSchema = new mongoose.Schema({
     company: {
         type: String, 
-        required: t[true, 'Please provide company name'],
+        required: [true, 'Please provide company name'],
         maxlength: 50
     },
     position: {
         type: String, 
-        required: t[true, 'Please provide position'],
+        required: [true, 'Please provide position'],
         maxlength: 100
     },
     status: {
@@ -21,6 +21,6 @@ const JobSchema = new mongoose.Schema({
         ref: 'User', //referencing User model
         required: [true, 'Please provide user']
     }
-}, {timestamps: true})
+}, {timestamps: true}) //creates 'createdAt' and 'updatedAt'
 
 module.exports = mongoose.model('Job', JobSchema)
