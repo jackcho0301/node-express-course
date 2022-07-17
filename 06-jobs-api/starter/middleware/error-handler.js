@@ -12,13 +12,20 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   //   return res.status(err.statusCode).json({ msg: err.message })
   // }
 
+  //if user does not provide email or password upon registering: 
+  if (err.name === 'ValidationError') {
+    customError.msg = Object.values(err.errors).map((item) => item.message).join(',')
+    customError.statusCode = 400
+  }
+
+  //if the user enters duplicate email address for registering:
   if (err.code && err.code == 11000) { //11000 is mongdDB's errorcode for duplicate
     customError.msg =  `Duplicate value entered for ${Object.keys(err.keyValue)} field, please choose another value`
     customError.statusCode = 400
   }
 
   // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err })
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: customError.msg })
+  return res.status(customError.statusCode).json({ msg: customError.msg })
 }
 
 module.exports = errorHandlerMiddleware
